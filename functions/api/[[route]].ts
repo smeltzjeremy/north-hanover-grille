@@ -102,8 +102,7 @@ function publicSite(data: SiteData) {
   return { ...rest, inquiries: [] as Inquiry[] }
 }
 
-export const onRequest: PagesFunction<Env> = async (ctx) => {
-  const { request, env } = ctx
+export async function handleApi(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url)
   const path = url.pathname.replace(/\/+$/, '') || '/'
   const method = request.method.toUpperCase()
@@ -213,3 +212,5 @@ export const onRequest: PagesFunction<Env> = async (ctx) => {
     return json({ error: message }, 500)
   }
 }
+
+export const onRequest: PagesFunction<Env> = async (ctx) => handleApi(ctx.request, ctx.env)

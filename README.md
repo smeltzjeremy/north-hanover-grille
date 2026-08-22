@@ -2,6 +2,11 @@
 
 Glassmorphic gastropub site for **37 N. Hanover Street, Carlisle, PA**. React + TypeScript on Cloudflare Pages, live data in KV, weekly flyer in R2. No external database.
 
+**Live preview:** [https://north-hanover-grille.broad-virgo.workers.dev](https://north-hanover-grille.broad-virgo.workers.dev)
+
+Claim this Cloudflare preview into your own account (valid ~60 minutes after deploy):  
+https://dash.cloudflare.com/claim-preview?claimToken=2j4R69TsPAGGn0_c_Hbu8yTdpXvEFNPWKTBxnV_4Rcg
+
 ## Stack
 
 - Frontend: Vite, React 19, TypeScript, Tailwind v4
@@ -43,11 +48,13 @@ npx wrangler pages secret put ADMIN_PIN --project-name north-hanover-grille
 npx wrangler pages secret put SESSION_SECRET --project-name north-hanover-grille
 ```
 
-4. Deploy:
+4. Deploy to your Pages project:
 
 ```bash
 npm run deploy
 ```
+
+GitHub Actions: add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` as repo secrets, then run **Deploy Cloudflare Pages**.
 
 Or connect this GitHub repo to Cloudflare Pages:
 
