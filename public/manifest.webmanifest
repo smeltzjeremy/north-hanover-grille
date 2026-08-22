@@ -1,0 +1,15 @@
+{
+  "name": "North Hanover Grille",
+  "short_name": "NHG",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0b0d",
+  "theme_color": "#5B1427",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

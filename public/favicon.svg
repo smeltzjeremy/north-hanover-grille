@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7a1c34"/>
+      <stop offset="100%" stop-color="#5B1427"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="32" cy="32" rx="30" ry="18" fill="url(#g)" stroke="#D4AF37" stroke-width="2"/>
+  <text x="32" y="37" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#F4EFE4" letter-spacing="1">NHG</text>
+</svg>
