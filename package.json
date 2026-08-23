@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/copy-pages-config.mjs",
     "preview": "vite preview",
     "pages:dev": "npm run build && wrangler pages dev dist",
     "deploy": "npm run build && node -e \"require('fs').copyFileSync('cloudflare/_redirects','dist/_redirects'); require('fs').copyFileSync('cloudflare/_routes.json','dist/_routes.json')\" && wrangler pages deploy dist --project-name north-hanover-grille",
