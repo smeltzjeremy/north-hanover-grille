@@ -1,4 +1,4 @@
-import { handleApi, type Env as ApiEnv } from './functions/api/[[route]]'
+import { handleApi, type Env as ApiEnv } from './functions/handler'
 
 export interface Env extends ApiEnv {
   ASSETS: Fetcher
