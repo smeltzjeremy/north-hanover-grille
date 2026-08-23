@@ -1,4 +1,4 @@
-import { Facebook, MapPin, Phone } from 'lucide-react'
+import { Facebook, Instagram, MapPin, Phone } from 'lucide-react'
 import { formatHoursLine } from '@shared/hours'
 import type { SiteData } from '@shared/types'
 
@@ -32,6 +32,15 @@ export default function Footer({ data }: { data: SiteData }) {
               >
                 <Facebook className="h-4 w-4 text-gold" />
                 Facebook
+              </a>
+              <a
+                href={data.venue.instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 hover:text-gold"
+              >
+                <Instagram className="h-4 w-4 text-gold" />
+                Instagram
               </a>
             </div>
           </div>

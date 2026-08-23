@@ -84,7 +84,7 @@ async function readSite(env: Env): Promise<SiteData> {
     venue: { ...DEFAULT_SITE_DATA.venue, ...parsed.venue },
     specials: { ...DEFAULT_SITE_DATA.specials, ...parsed.specials },
     banquet: { ...DEFAULT_SITE_DATA.banquet, ...parsed.banquet },
-    taps: parsed.taps?.length === 14 ? parsed.taps : DEFAULT_SITE_DATA.taps,
+    taps: parsed.taps?.length ? parsed.taps : DEFAULT_SITE_DATA.taps,
     menu: parsed.menu?.length ? parsed.menu : DEFAULT_SITE_DATA.menu,
     hours: parsed.hours?.length ? parsed.hours : DEFAULT_SITE_DATA.hours,
     sauces: parsed.sauces?.length ? parsed.sauces : DEFAULT_SITE_DATA.sauces,
@@ -178,7 +178,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
         ...current,
         ...incoming,
         inquiries: current.inquiries,
-        taps: Array.isArray(incoming.taps) && incoming.taps.length === 14 ? incoming.taps : current.taps,
+        taps: Array.isArray(incoming.taps) && incoming.taps.length ? incoming.taps : current.taps,
         menu: Array.isArray(incoming.menu) ? incoming.menu : current.menu,
       }
       await writeSite(env, next)

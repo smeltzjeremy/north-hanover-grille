@@ -9,9 +9,9 @@ export default function TuesdayWings({ data }: { data: SiteData }) {
     <section id="specials" className="mx-auto max-w-5xl px-4 py-8">
       <article className="glass relative overflow-hidden p-5 sm:p-7">
         <img
-          src="/images/wings.jpg"
-          alt="Boneless wings"
-          className="absolute inset-y-0 right-0 hidden h-full w-[42%] object-cover opacity-80 sm:block"
+          src="/images/from-site/wings.jpg"
+          alt="Wings at North Hanover Grille"
+          className="absolute inset-y-0 right-0 hidden h-full w-[42%] object-cover opacity-90 sm:block"
         />
         <div className="absolute inset-y-0 right-0 hidden w-[42%] bg-gradient-to-l from-transparent to-obsidian/90 sm:block" />
 
@@ -30,7 +30,7 @@ export default function TuesdayWings({ data }: { data: SiteData }) {
             ranch on the side.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
-            {['Hot Honey Garlic', 'Smokey Reaper', 'Garlic Parm', 'Mango Habanero', 'Old Bay Rub'].map(
+            {['Honey Hot', 'Extra Hot', 'Garlic Parmesan', 'Habanero Mango', 'Old Bay'].map(
               (s) => (
                 <span key={s} className="chip">
                   <Flame className="mr-1 h-3 w-3" />

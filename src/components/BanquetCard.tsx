@@ -27,7 +27,11 @@ export default function BanquetCard({ data }: { data: SiteData }) {
   return (
     <section id="banquet" className="mx-auto max-w-5xl px-4 py-10">
       <article className="glass overflow-hidden">
-        <img src="/images/banquet.jpg" alt="Private dining suite" className="h-56 w-full object-cover" />
+        <img
+          src="/images/from-site/int_dr1.jpg"
+          alt="Rear dining room at North Hanover Grille"
+          className="h-56 w-full object-cover"
+        />
         <div className="p-6 sm:p-8">
           <p className="section-kicker">Private Dining Suite</p>
           <h2 className="font-display mt-2 text-3xl">Room for {data.banquet.capacity}.</h2>

@@ -1,22 +1,25 @@
 import type { SiteData } from '@shared/types'
 
 export default function TapGrid({ data }: { data: SiteData }) {
-  const onCount = data.taps.filter((t) => t.on).length
+  const onCount = data.taps.filter((t) => t.on && t.name.trim()).length
 
   return (
     <section id="taps" className="mx-auto max-w-5xl px-4 py-10">
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
-          <p className="section-kicker">Draft Lineup</p>
-          <h2 className="font-display mt-2 text-3xl sm:text-4xl">14 beers on tap</h2>
+          <p className="section-kicker">Draft Lineup · Pulled from the live board</p>
+          <h2 className="font-display mt-2 text-3xl sm:text-4xl">
+            {data.taps.length} lines · {onCount} pouring
+          </h2>
         </div>
-        <p className="text-sm text-mist">
-          <span className="text-gold-bright">{onCount}</span> pouring
-        </p>
       </div>
 
       <div className="relative mb-6 overflow-hidden rounded-[16px]">
-        <img src="/images/taps.jpg" alt="Tap handles" className="h-40 w-full object-cover sm:h-52" />
+        <img
+          src="/images/from-site/int_bar.jpg"
+          alt="Draft wall at North Hanover Grille"
+          className="h-40 w-full object-cover object-[center_60%] sm:h-52"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
       </div>
 
@@ -31,7 +34,7 @@ export default function TapGrid({ data }: { data: SiteData }) {
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-2">
-                <h3 className="truncate font-semibold leading-tight">{tap.name}</h3>
+                <h3 className="truncate font-semibold leading-tight">{tap.name || 'Open tap'}</h3>
                 <span
                   className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase ${
                     tap.on

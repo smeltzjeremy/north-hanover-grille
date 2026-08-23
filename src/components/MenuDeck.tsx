@@ -27,8 +27,17 @@ export default function MenuDeck({ data }: { data: SiteData }) {
       <p className="section-kicker">The Board</p>
       <h2 className="font-display mt-2 text-3xl sm:text-4xl">Full menu</h2>
       <p className="mt-2 max-w-2xl text-mist">
-        Scratch soups, jumbo wings, half-pound burgers, and dinners with two sides. 86'd items stay
-        on the board so you know what's out.
+        Current takeout board from northhanovergrille.com — wings, shareables, scratch soups, wraps,
+        burgers, and dinners. 86'd items stay visible so you know what's out.{' '}
+        <a
+          href="/North_Hanover_Grille_TakeOut_Menu.pdf"
+          target="_blank"
+          rel="noreferrer"
+          className="text-gold-bright underline-offset-2 hover:underline"
+        >
+          Download the takeout PDF
+        </a>
+        .
       </p>
 
       <div className="no-scrollbar mt-6 flex gap-2 overflow-x-auto pb-2">

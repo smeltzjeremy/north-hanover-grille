@@ -62,6 +62,7 @@ export type SiteData = {
     address: string
     mapsUrl: string
     facebookUrl: string
+    instagramUrl: string
     timezone: string
   }
   hours: DayHours[]
@@ -104,5 +105,6 @@ export const BEER_STYLES = [
   'Belgian',
   'Sour',
   'Cider',
+  'Hefeweizen',
   'Seasonal',
 ] as const

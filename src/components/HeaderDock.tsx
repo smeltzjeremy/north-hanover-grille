@@ -4,7 +4,7 @@ import type { SiteData } from '@shared/types'
 
 const links = [
   { href: '#menu', label: 'Menu' },
-  { href: '#taps', label: '14 Taps' },
+  { href: '#taps', label: 'On Tap' },
   { href: '#specials', label: 'Specials' },
   { href: '#banquet', label: 'Private Dining' },
 ]
@@ -17,7 +17,7 @@ export default function HeaderDock({ data }: { data: SiteData }) {
       <div className="glass-tight pointer-events-auto mx-auto flex max-w-5xl flex-col gap-2 px-3 py-2 sm:flex-row sm:items-center sm:px-4">
         <a href="#top" className="flex min-w-0 items-center gap-3">
           <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white shadow-[0_0_0_1px_rgba(212,175,55,0.65)]">
-            <img src="/images/logo.jpg" alt="" className="h-9 w-9 object-contain" />
+            <img src="/images/logo-live.png" alt="" className="h-10 w-10 object-contain" />
           </span>
           <span className="min-w-0">
             <span className="font-display block truncate text-sm tracking-[0.14em] text-ivory sm:text-base">
