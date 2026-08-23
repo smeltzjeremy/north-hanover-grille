@@ -81,6 +81,26 @@ export type SiteData = {
   inquiries: Inquiry[]
 }
 
+export const TAP_COUNT = 14
+
+export function normalizeTaps(taps: Tap[]): Tap[] {
+  const byNum = new Map(taps.map((t) => [t.tap, t]))
+  return Array.from({ length: TAP_COUNT }, (_, i) => {
+    const n = i + 1
+    return (
+      byNum.get(n) ?? {
+        tap: n,
+        name: '',
+        style: 'Seasonal',
+        brewery: '',
+        origin: '',
+        abv: 0,
+        on: false,
+      }
+    )
+  })
+}
+
 export const MENU_CATEGORIES: { id: MenuCategoryId; label: string }[] = [
   { id: 'wings', label: 'Wings' },
   { id: 'quesadillas', label: 'Quesadillas' },

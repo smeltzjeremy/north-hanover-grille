@@ -8,10 +8,11 @@ export default function TapGrid({ data }: { data: SiteData }) {
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <p className="section-kicker">Draft Lineup · Pulled from the live board</p>
-          <h2 className="font-display mt-2 text-3xl sm:text-4xl">
-            {data.taps.length} lines · {onCount} pouring
-          </h2>
+          <h2 className="font-display mt-2 text-3xl sm:text-4xl">14 beers on tap</h2>
         </div>
+        <p className="text-sm text-mist">
+          <span className="text-gold-bright">{onCount}</span> pouring
+        </p>
       </div>
 
       <div className="relative mb-6 overflow-hidden rounded-[16px]">

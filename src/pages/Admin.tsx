@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Beer,
   FileText,
+  Home,
   LogOut,
+  Plus,
   Save,
   Search,
+  Trash2,
   Utensils,
   Users,
 } from 'lucide-react'
-import { BEER_STYLES, MENU_CATEGORIES } from '@shared/types'
-import type { MenuCategoryId, SiteData, Tap } from '@shared/types'
+import { BEER_STYLES, MENU_CATEGORIES, normalizeTaps } from '@shared/types'
+import type { MenuCategoryId, MenuItem, PriceVariant, SiteData, Tap } from '@shared/types'
 import {
   adminLogin,
   adminLogout,
@@ -19,6 +23,14 @@ import {
 } from '../lib/api'
 
 type Tab = 'taps' | 'menu' | 'flyer' | 'inbox'
+
+const emptyNewItem = {
+  name: '',
+  category: 'starters' as MenuCategoryId,
+  group: '',
+  description: '',
+  variants: [{ id: 'std', label: '', price: '' }] as { id: string; label: string; price: string }[],
+}
 
 export default function Admin({
   data,
@@ -32,12 +44,14 @@ export default function Admin({
   const [pin, setPin] = useState('')
   const [error, setError] = useState('')
   const [tab, setTab] = useState<Tab>('taps')
-  const [draft, setDraft] = useState<SiteData>(data)
+  const [draft, setDraft] = useState<SiteData>({ ...data, taps: normalizeTaps(data.taps) })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [q, setQ] = useState('')
   const [menuCat, setMenuCat] = useState<MenuCategoryId | 'all'>('all')
   const [dragOver, setDragOver] = useState(false)
+  const [adding, setAdding] = useState(false)
+  const [newItem, setNewItem] = useState(emptyNewItem)
 
   useEffect(() => {
     checkAdminSession()
@@ -46,7 +60,7 @@ export default function Admin({
   }, [])
 
   useEffect(() => {
-    setDraft(data)
+    setDraft({ ...data, taps: normalizeTaps(data.taps) })
   }, [data])
 
   const login = async () => {
@@ -63,10 +77,12 @@ export default function Admin({
 
   const persist = async () => {
     setSaving(true)
-    const ok = await saveSiteData(draft)
+    const payload = { ...draft, taps: normalizeTaps(draft.taps) }
+    const ok = await saveSiteData(payload)
     setSaving(false)
     if (ok) {
-      onChange(draft)
+      onChange(payload)
+      setDraft(payload)
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } else {
@@ -77,8 +93,47 @@ export default function Admin({
   const setTap = (tap: number, patch: Partial<Tap>) => {
     setDraft({
       ...draft,
-      taps: draft.taps.map((t) => (t.tap === tap ? { ...t, ...patch } : t)),
+      taps: normalizeTaps(draft.taps).map((t) => (t.tap === tap ? { ...t, ...patch } : t)),
     })
+  }
+
+  const patchMenu = (id: string, patch: Partial<MenuItem>) => {
+    setDraft({
+      ...draft,
+      menu: draft.menu.map((m) => (m.id === id ? { ...m, ...patch } : m)),
+    })
+  }
+
+  const addDish = () => {
+    if (!newItem.name.trim()) {
+      setError('New dish needs a name.')
+      return
+    }
+    const variants: PriceVariant[] = newItem.variants
+      .filter((v) => v.price !== '')
+      .map((v, i) => ({
+        id: v.id || `p${i + 1}`,
+        label: v.label.trim(),
+        price: Number(v.price) || 0,
+      }))
+    if (!variants.length) {
+      setError('Add at least one price.')
+      return
+    }
+    const item: MenuItem = {
+      id: `item-${crypto.randomUUID()}`,
+      category: newItem.category,
+      name: newItem.name.trim(),
+      description: newItem.description.trim() || undefined,
+      group: newItem.group.trim() || undefined,
+      variants,
+      available: true,
+    }
+    setDraft({ ...draft, menu: [...draft.menu, item] })
+    setNewItem(emptyNewItem)
+    setAdding(false)
+    setError('')
+    setMenuCat(item.category)
   }
 
   const menuItems = useMemo(() => {
@@ -144,9 +199,10 @@ export default function Admin({
             ))}
           </div>
           {error && <p className="mt-3 text-center text-sm text-rose-300">{error}</p>}
-          <a href="/" className="mt-5 block text-center text-sm text-mist">
-            Back to site
-          </a>
+          <Link to="/" className="mt-5 flex items-center justify-center gap-2 text-sm text-mist">
+            <Home className="h-4 w-4" />
+            Back to main page
+          </Link>
         </div>
       </div>
     )
@@ -154,12 +210,16 @@ export default function Admin({
 
   return (
     <div className="mx-auto min-h-dvh max-w-3xl px-3 pb-28 pt-4">
-      <header className="glass mb-4 flex items-center justify-between p-3">
+      <header className="glass mb-4 flex items-center justify-between gap-2 p-3">
         <div>
           <p className="section-kicker">NHG Admin</p>
           <p className="font-display text-lg">Live controls</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
+          <Link to="/" className="btn-ghost !py-2 text-sm">
+            <Home className="h-4 w-4" />
+            Main page
+          </Link>
           <button type="button" className="btn-gold !py-2 text-sm" onClick={() => void persist()}>
             <Save className="h-4 w-4" />
             {saving ? 'Saving' : saved ? 'Saved' : 'Save'}
@@ -181,7 +241,8 @@ export default function Admin({
 
       {tab === 'taps' && (
         <section className="space-y-3">
-          {draft.taps.map((t) => (
+          <p className="px-1 text-sm text-mist">14 taps. Toggle a keg off when it kicks.</p>
+          {normalizeTaps(draft.taps).map((t) => (
             <article key={t.tap} className="glass p-3">
               <div className="mb-2 flex items-center justify-between">
                 <span className="font-display text-gold-bright">Tap {t.tap}</span>
@@ -244,6 +305,102 @@ export default function Admin({
 
       {tab === 'menu' && (
         <section>
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <p className="text-sm text-mist">86 a dish, change a price, or add something new.</p>
+            <button
+              type="button"
+              className="btn-gold !py-2 text-sm"
+              onClick={() => setAdding((v) => !v)}
+            >
+              <Plus className="h-4 w-4" />
+              {adding ? 'Close' : 'Add item'}
+            </button>
+          </div>
+
+          {adding && (
+            <article className="glass mb-4 space-y-2 p-3">
+              <p className="font-display text-lg text-gold-bright">New menu item</p>
+              <input
+                value={newItem.name}
+                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                placeholder="Name"
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2"
+              />
+              <select
+                value={newItem.category}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, category: e.target.value as MenuCategoryId })
+                }
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2"
+              >
+                {MENU_CATEGORIES.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <input
+                value={newItem.group}
+                onChange={(e) => setNewItem({ ...newItem, group: e.target.value })}
+                placeholder="Group (optional) — e.g. Wraps"
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2"
+              />
+              <textarea
+                value={newItem.description}
+                onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                placeholder="Description (optional)"
+                rows={2}
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2"
+              />
+              {newItem.variants.map((v, i) => (
+                <div key={v.id} className="grid grid-cols-2 gap-2">
+                  <input
+                    value={v.label}
+                    onChange={(e) => {
+                      const variants = [...newItem.variants]
+                      variants[i] = { ...v, label: e.target.value }
+                      setNewItem({ ...newItem, variants })
+                    }}
+                    placeholder="Size label (optional)"
+                    className="rounded-xl border border-white/10 bg-black/30 px-3 py-2"
+                  />
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={v.price}
+                    onChange={(e) => {
+                      const variants = [...newItem.variants]
+                      variants[i] = { ...v, price: e.target.value }
+                      setNewItem({ ...newItem, variants })
+                    }}
+                    placeholder="Price"
+                    className="rounded-xl border border-white/10 bg-black/30 px-3 py-2"
+                  />
+                </div>
+              ))}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="btn-ghost !py-2 text-sm"
+                  onClick={() =>
+                    setNewItem({
+                      ...newItem,
+                      variants: [
+                        ...newItem.variants,
+                        { id: `p${newItem.variants.length + 1}`, label: '', price: '' },
+                      ],
+                    })
+                  }
+                >
+                  Add size / price
+                </button>
+                <button type="button" className="btn-gold !py-2 flex-1 text-sm" onClick={addDish}>
+                  Add to menu
+                </button>
+              </div>
+            </article>
+          )}
+
           <div className="glass mb-3 flex items-center gap-2 p-2">
             <Search className="ml-2 h-4 w-4 text-mist" />
             <input
@@ -276,21 +433,15 @@ export default function Admin({
             {menuItems.map((item) => (
               <article key={item.id} className="glass p-3">
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    {item.group && <p className="text-xs text-mist">{item.group}</p>}
-                  </div>
+                  <input
+                    value={item.name}
+                    onChange={(e) => patchMenu(item.id, { name: e.target.value })}
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 font-semibold"
+                  />
                   <button
                     type="button"
-                    onClick={() =>
-                      setDraft({
-                        ...draft,
-                        menu: draft.menu.map((m) =>
-                          m.id === item.id ? { ...m, available: !m.available } : m,
-                        ),
-                      })
-                    }
-                    className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${
+                    onClick={() => patchMenu(item.id, { available: !item.available })}
+                    className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold uppercase ${
                       item.available
                         ? 'bg-emerald-500/20 text-emerald-300'
                         : 'bg-rose-500/20 text-rose-300'
@@ -299,6 +450,34 @@ export default function Admin({
                     {item.available ? 'In' : "86'd"}
                   </button>
                 </div>
+                <select
+                  value={item.category}
+                  onChange={(e) =>
+                    patchMenu(item.id, { category: e.target.value as MenuCategoryId })
+                  }
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm"
+                >
+                  {MENU_CATEGORIES.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  value={item.group ?? ''}
+                  onChange={(e) => patchMenu(item.id, { group: e.target.value || undefined })}
+                  placeholder="Group (optional)"
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm"
+                />
+                <textarea
+                  value={item.description ?? ''}
+                  onChange={(e) =>
+                    patchMenu(item.id, { description: e.target.value || undefined })
+                  }
+                  placeholder="Description"
+                  rows={2}
+                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm"
+                />
                 <div className="mt-2 grid grid-cols-2 gap-2">
                   {item.variants.map((v) => (
                     <label key={v.id} className="text-xs text-mist">
@@ -309,17 +488,9 @@ export default function Admin({
                         value={v.price}
                         onChange={(e) => {
                           const price = Number(e.target.value)
-                          setDraft({
-                            ...draft,
-                            menu: draft.menu.map((m) =>
-                              m.id === item.id
-                                ? {
-                                    ...m,
-                                    variants: m.variants.map((x) =>
-                                      x.id === v.id ? { ...x, price } : x,
-                                    ),
-                                  }
-                                : m,
+                          patchMenu(item.id, {
+                            variants: item.variants.map((x) =>
+                              x.id === v.id ? { ...x, price } : x,
                             ),
                           })
                         }}
@@ -328,6 +499,21 @@ export default function Admin({
                     </label>
                   ))}
                 </div>
+                <button
+                  type="button"
+                  className="btn-ghost mt-3 !py-2 text-xs text-rose-300"
+                  onClick={() => {
+                    if (window.confirm(`Remove ${item.name} from the menu?`)) {
+                      setDraft({
+                        ...draft,
+                        menu: draft.menu.filter((m) => m.id !== item.id),
+                      })
+                    }
+                  }}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Remove
+                </button>
               </article>
             ))}
           </div>

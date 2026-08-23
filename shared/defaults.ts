@@ -53,8 +53,6 @@ export const DEFAULT_SITE_DATA: SiteData = {
     tap(12, 'Dewey Swishy Pants IPA', 'IPA', 'Dewey Beer Co.', 'Dewey Beach, DE', 6.5),
     tap(13, 'Downeast Peach Mango Cider', 'Cider', 'Downeast Cider House', 'Boston, MA', 5.0),
     tap(14, "Bell's Two Hearted Ale", 'IPA', "Bell's Brewery", 'Comstock, MI', 7.0),
-    tap(15, '', 'Seasonal', 'Open tap', '', 0, false),
-    tap(16, '', 'Seasonal', 'Open tap', '', 0, false),
   ],
   sauces: [
     'Honey BBQ',

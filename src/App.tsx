@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { DEFAULT_SITE_DATA } from '@shared/defaults'
-import type { SiteData } from '@shared/types'
+import { normalizeTaps, type SiteData } from '@shared/types'
 import { fetchSiteData } from './lib/api'
 import Home from './pages/Home'
 import Admin from './pages/Admin'
@@ -12,7 +12,7 @@ export default function App() {
 
   useEffect(() => {
     fetchSiteData()
-      .then(setData)
+      .then((next) => setData({ ...next, taps: normalizeTaps(next.taps) }))
       .finally(() => setReady(true))
   }, [])
 
